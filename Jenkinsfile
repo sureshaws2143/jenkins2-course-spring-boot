@@ -1,77 +1,32 @@
-// Obtaining an Artifactory server instance defined in Jenkins:
-			
-// def server = Artifactory.server 'Artifactory Version 4.15.0'
-
-		 //If artifactory is not defined in Jenkins, then create on:
-		// def server = Artifactory.newServer url: 'Artifactory url', username: 'username', password: 'password'
-
-//Create Artifactory Maven Build instance
-// def rtMaven = Artifactory.newMavenBuild()
-
-def buildInfo
-
 node {
-		stage ('Init'){
-  		checkout scm
-  		sh 'echo $BRANCH_NAME'
-		}
-
-        // stage ('Clone sources'){
-
-		// 	    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
-        //     }
-
-     	stage('SonarQube analysis'){
-	    //  steps {
-		//Prepare SonarQube scanner enviornment
-		// withSonarQubeEnv('credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube') 
-		// withSonarQubeEnv(credentialsId: 'jenkins-sonar-int', installationName: 'sonarqube') { // You can override the credential to be used
-		withSonarQubeEnv(credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube')
-		sh 'mvn sonar:sonar \
+stage ('Init'){
+  checkout scm
+  sh 'echo $BRANCH_NAME'
+}
+  stage('SClone sources - CM') {
+    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
+  }
+  stage('SonarQube analysis') {
+        if (env.BRANCH_NAME == 'master') {
+        stage 'Only on master'
+        println 'This happens only on master'
+        } else {
+        stage 'Other branches'
+        println "Current branch ${env.BRANCH_NAME}"
+        }
+          withSonarQubeEnv(credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube') { // You can override the credential to be used
+          //sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar'
+        sh 'mvn sonar:sonar \
 			-Dsonar.projectKey=jenkins2-course-spring-boot \
 			-Dsonar.host.url=http://192.168.56.109:9000 \
 			-Dsonar.login=11464c0f4cc861c21b3db9dea8a894d48e6e2b72'
-		 }
-		
-		//	stage('Quality Gate') {
-		//		steps {
-		//			timeout(time: 1, unit: 'HOURS') {
-					//Parameter indicates wether to set pipeline to UNSTABLE if Quality Gate fails
-						// true = set pipeline to UNSTABLE, false = don't
-					// Requires SonarQube Scanner for Jenkins 2.7+
-		//			waitForQualityGate abortPipeline: false
-		//		       }
-		//		 }
-		
-		// stage('Artifactory configuration') {
-			
-		//    steps {
-		// 	script {
-		// 		rtMaven.tool = 'Maven-3.6.3' //Maven tool name specified in Jenkins configuration
-			
-		// 		rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server //Defining where the build artifacts should be deployed to
-				
-		// 		rtMaven.resolver releaseRepo:'libs-release', snapshotRepo: 'libs-snapshot', server: server //Defining where Maven Build should download its dependencies from
-				
-		// 		rtMaven.deployer.artifactDeploymentPatterns.addExclude("pom.xml") //Exclude artifacts from being deployed
-				
-		// 		//rtMaven.deployer.deployArtifacts =false // Disable artifacts deployment during Maven run
-				
-		// 		buildInfo = Artifactory.newBuildInfo() //Publishing build-Info to artifactory
-				
-		// 		buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
 
-		// 		buildInfo.env.capture = true
-		// 		}
-		//     }
-		// }
+// sh 'mvn sonar:sonar \
+//   -Dsonar.projectKey=sonarscanner-maven-basic \
+//   -Dsonar.host.url=http://10.1.3.29:9000/sonarqube \
+//   -Dsonar.login=5d7694152e415c79121e161e461066048016117d'
 
-		stage('Execute Maven'){		
-		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
-		}
-		
-
-		stage('Publish build info'){
-		server.publishBuildInfo buildInfo
-		}
-	}
+// sh 'mvn sonar:sonar \
+//   -Dsonar.projectKey=sonarscanner-maven-basic \
+//   -Dsonar.host.url=http://10.1.3.29:9000/sonarqube \
+//   -Dsonar.login=1141d5896f177861ef5b06bd7fc
