@@ -23,7 +23,8 @@ pipeline {
      	stage('SonarQube analysis') {
 	    //  steps {
 		//Prepare SonarQube scanner enviornment
-		withSonarQubeEnv('credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube') 
+		// withSonarQubeEnv('credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube') 
+		withSonarQubeEnv(credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube')
 		sh 'mvn sonar:sonar \
 			-Dsonar.projectKey=jenkins2-course-spring-boot \
 			-Dsonar.host.url=http://192.168.56.109:9000 \
