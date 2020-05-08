@@ -11,22 +11,22 @@ def rtMaven = Artifactory.newMavenBuild()
 def buildInfo
 
 node {
-
-			stage ('Init'){
-  			checkout scm
-  			sh 'echo $BRANCH_NAME'
-			}
+		stage ('Init'){
+  		checkout scm
+  		sh 'echo $BRANCH_NAME'
+		}
 
         // stage ('Clone sources'){
 
 		// 	    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
         //     }
 
-     	stage('SonarQube analysis') {
+     	stage('SonarQube analysis'){
 	    //  steps {
 		//Prepare SonarQube scanner enviornment
 		// withSonarQubeEnv('credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube') 
-		withSonarQubeEnv(credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube')
+		// withSonarQubeEnv(credentialsId: 'jenkins-sonar-int', installationName: 'sonarqube') { // You can override the credential to be used
+		   withSonarQubeEnv(credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube')
 		sh 'mvn sonar:sonar \
 			-Dsonar.projectKey=jenkins2-course-spring-boot \
 			-Dsonar.host.url=http://192.168.56.109:9000 \
@@ -66,17 +66,12 @@ node {
 	//     }
 	// }
 
-		stage('Execute Maven') {
-		
+		stage('Execute Maven'){		
 		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
-
 		}
 		
 
-		stage('Publish build info') {
-
-
+		stage('Publish build info'){
 		server.publishBuildInfo buildInfo
-
 		}
 	}
