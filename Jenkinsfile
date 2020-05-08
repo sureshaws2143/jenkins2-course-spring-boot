@@ -2,13 +2,23 @@ def rtMaven = Artifactory.newMavenBuild()
 
 def buildInfo
 node {
-stage ('Init'){
-  checkout scm
-  sh 'echo $BRANCH_NAME'
-}
-  stage('SClone sources - CM') {
-    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
+
+  stage('Clean Workspace')
+  {
+    step([$class: 'WsCleanup'])
   }
+
+  stage ('Init'){
+    checkout scm
+    sh 'echo $BRANCH_NAME'
+  }
+
+  stage('Workspace Preparation - Clone sources') {
+    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
+    def currentEnv = sh(script: SH_ENV + 'env', returnStdout: true)
+    echo currentEnv
+  }
+  
   stage('SonarQube analysis') {
         if (env.BRANCH_NAME == 'master') {
         stage 'Only on master'
@@ -26,7 +36,7 @@ stage ('Init'){
           }
         }
 
-		stage('Maven Build'){		
+		stage('App Build'){		
 		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
 		}
 		
