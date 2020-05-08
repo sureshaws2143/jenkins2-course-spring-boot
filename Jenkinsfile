@@ -16,7 +16,7 @@ pipeline {
 	stages {
         stage ('Clone sources'){
 
-                git url: 'https://github.com/Nagendra-ch/jenkins2-course-spring-boot.git'
+			    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
             }
 
      	stage('SonarQube analysis') {
@@ -64,18 +64,17 @@ pipeline {
 	// }
 
 	stage('Execute Maven') {
-		   script {
 		
 		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
-			}
+
 		}
 		
 
 	stage('Publish build info') {
-		  script {
+
 
 		server.publishBuildInfo buildInfo
-		}
+
 		}
 }
 }
