@@ -10,14 +10,19 @@ def rtMaven = Artifactory.newMavenBuild()
 
 def buildInfo
 
-pipeline {
-    agent any
+node {
 
 	stages {
-        stage ('Clone sources'){
 
-			    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
-            }
+			stage ('Init'){
+  			checkout scm
+  			sh 'echo $BRANCH_NAME'
+			}
+
+        // stage ('Clone sources'){
+
+		// 	    git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
+        //     }
 
      	stage('SonarQube analysis') {
 	    //  steps {
@@ -63,18 +68,18 @@ pipeline {
 	//     }
 	// }
 
-	stage('Execute Maven') {
+		stage('Execute Maven') {
 		
 		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
 
 		}
 		
 
-	stage('Publish build info') {
+		stage('Publish build info') {
 
 
 		server.publishBuildInfo buildInfo
 
 		}
-}
+	}
 }
