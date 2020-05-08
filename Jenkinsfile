@@ -14,11 +14,10 @@ pipeline {
     agent any
 
 	stages {
-        stage('Clone sources'){
-            steps {
+        stage ('Clone sources'){
+
                 git url: 'https://github.com/Nagendra-ch/jenkins2-course-spring-boot.git'
             }
-        }
 
      	stage('SonarQube analysis') {
 	    //  steps {
@@ -65,22 +64,18 @@ pipeline {
 	// }
 
 	stage('Execute Maven') {
-		steps {
 		   script {
 		
 		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
 			}
 		}
 		
-	}
 
 	stage('Publish build info') {
-		steps {
 		  script {
 
 		server.publishBuildInfo buildInfo
 		}
 		}
-	}
 }
 }
