@@ -27,7 +27,7 @@ node {
         stage 'Other branches'
         println "Current branch ${env.BRANCH_NAME}"
         }
-          withSonarQubeEnv(credentialsId: 'b6ba01fd-60a3-438e-8920-4db0b9119fa8', installationName: 'sonarqube') { // You can override the credential to be used
+          withSonarQubeEnv(credentialsId: 'jenkins-sonar-int', installationName: 'sonarqube') { // You can override the credential to be used
           //sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar'
         sh 'mvn sonar:sonar \
 			-Dsonar.projectKey=jenkins2-course-spring-boot \
