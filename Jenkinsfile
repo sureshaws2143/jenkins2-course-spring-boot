@@ -20,7 +20,9 @@ stage ('Init'){
 			-Dsonar.projectKey=jenkins2-course-spring-boot \
 			-Dsonar.host.url=http://192.168.56.109:9000 \
 			-Dsonar.login=11464c0f4cc861c21b3db9dea8a894d48e6e2b72'
-
+          }
+  }
+}
 // sh 'mvn sonar:sonar \
 //   -Dsonar.projectKey=sonarscanner-maven-basic \
 //   -Dsonar.host.url=http://10.1.3.29:9000/sonarqube \
