@@ -1,3 +1,6 @@
+def rtMaven = Artifactory.newMavenBuild()
+
+def buildInfo
 node {
 stage ('Init'){
   checkout scm
@@ -21,7 +24,17 @@ stage ('Init'){
 			-Dsonar.host.url=http://192.168.56.109:9000 \
 			-Dsonar.login=11464c0f4cc861c21b3db9dea8a894d48e6e2b72'
           }
-  }
+        }
+
+		stage('Maven Build'){		
+		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+		}
+		
+
+		stage('Publish build info'){
+		server.publishBuildInfo buildInfo
+		}
+
 }
 // sh 'mvn sonar:sonar \
 //   -Dsonar.projectKey=sonarscanner-maven-basic \
