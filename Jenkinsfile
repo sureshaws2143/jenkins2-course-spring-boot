@@ -15,7 +15,7 @@ node {
 
   stage('Workspace Preparation - Clone sources') {
     git 'https://github.com/sureshaws2143/jenkins2-course-spring-boot.git'
-    def currentEnv = sh(script: SH_ENV + 'env', returnStdout: true)
+    // def currentEnv = sh(script: SH_ENV + 'env', returnStdout: true)
     echo currentEnv
   }
   
