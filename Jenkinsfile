@@ -12,8 +12,6 @@ def buildInfo
 
 node {
 
-	stages {
-
 			stage ('Init'){
   			checkout scm
   			sh 'echo $BRANCH_NAME'
@@ -82,4 +80,3 @@ node {
 
 		}
 	}
-}
